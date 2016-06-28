@@ -162,9 +162,8 @@ public class InCallMessageController implements InCallSubstateListener, VideoEve
             Log.e(this, "onVideoQualityChanged - Context is null/not primary call.");
             return;
         }
-
-        if (QtiCallUtils.isConfigEnabled(mContext, R.bool.config_display_video_quality_toast)) {
-            final Resources resources = mContext.getResources();
+        final Resources resources = mContext.getResources();
+        if (resources.getBoolean(R.bool.config_display_video_quality_toast)) {
             final String videoQualityChangedText = resources.getString(
                     R.string.video_quality_changed) + resources.getString(
                     QtiCallUtils.getVideoQualityResourceId(videoQuality));
@@ -184,8 +183,8 @@ public class InCallMessageController implements InCallSubstateListener, VideoEve
             Log.e(this, "onCallSessionEvent - Context is null.");
             return;
         }
-
-        if (QtiCallUtils.isConfigEnabled(mContext, R.bool.config_call_session_event_toast)) {
+        final Resources resources = mContext.getResources();
+        if (resources.getBoolean(R.bool.config_call_session_event_toast)) {
             QtiCallUtils.displayToast(mContext, QtiCallUtils.getCallSessionResourceId(event));
         }
     }
@@ -197,8 +196,8 @@ public class InCallMessageController implements InCallSubstateListener, VideoEve
     @Override
     public void onCallDataUsageChange(final long dataUsage) {
         Log.d(this, "onCallDataUsageChange: dataUsage = " + dataUsage);
-
-        if (QtiCallUtils.isConfigEnabled(mContext, R.bool.config_display_data_usage_toast)) {
+        final Resources resources = mContext.getResources();
+        if (resources.getBoolean(R.bool.config_display_data_usage_toast)) {
             final String dataUsageChangedText = mContext.getResources().getString(
                     R.string.data_usage_label) + dataUsage;
             QtiCallUtils.displayToast(mContext, dataUsageChangedText);

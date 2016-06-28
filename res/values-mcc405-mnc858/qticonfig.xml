@@ -38,10 +38,6 @@
     <!-- Config to show/hide data usage toast -->
     <bool name="config_display_data_usage_toast">false</bool>
 
-    <!-- Determines UI extensions for video calls should be used. -->
-    <bool name="video_call_use_ext">false</bool>
-    <!-- Determines if a customized video ui support is required or not -->
-    <bool name="use_custom_video_ui">true</bool>
     <!-- Config to hide preview window in VT conference call -->
     <bool name="config_hide_preview_in_vt_confcall">true</bool>
 </resources>

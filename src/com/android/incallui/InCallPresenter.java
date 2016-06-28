@@ -18,18 +18,14 @@ package com.android.incallui;
 
 import android.app.ActivityManager.TaskDescription;
 import android.app.FragmentManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ActivityNotFoundException;
 import android.content.res.Resources;
-import android.content.ServiceConnection;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.PowerManager;
-import android.os.RemoteException;
 import android.telecom.DisconnectCause;
 import android.telecom.PhoneAccount;
 import android.telecom.PhoneAccountHandle;
@@ -54,9 +50,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.codeaurora.ims.internal.IQtiImsExt;
-import org.codeaurora.ims.internal.IQtiImsExtListener;
 
 /**
  * Takes updates from the CallList and notifies the InCallActivity (UI)
@@ -128,10 +121,6 @@ public class InCallPresenter implements CallList.Listener,
      */
     private boolean mIsFullScreen = false;
 
-    private static final String IMS_SERVICE_PKG_NAME = "org.codeaurora.ims";
-    private IQtiImsExt mQtiImsExt = null;
-    private boolean mImsServiceBound = false;
-
     private final android.telecom.Call.Callback mCallCallback =
             new android.telecom.Call.Callback() {
         @Override
@@ -165,52 +154,6 @@ public class InCallPresenter implements CallList.Listener,
             onDetailsChanged(telecomCall, telecomCall.getDetails());
         }
     };
-
-    /* Service connection bound to IQtiImsExt */
-    private ServiceConnection mConnection = new ServiceConnection() {
-        /* Below API gets invoked when connection to ImsService is established */
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            /* Retrieve the IQtiImsExt */
-            mQtiImsExt = IQtiImsExt.Stub.asInterface(service);
-        }
-
-        /* Below API gets invoked when connection to ImsService is disconnected */
-        public void onServiceDisconnected(ComponentName className) {
-            mImsServiceBound = false;
-            mQtiImsExt = null;
-        }
-    };
-
-    public IQtiImsExt getQtiImsExtInterface() {
-        if (mImsServiceBound && (mQtiImsExt != null)) {
-            return mQtiImsExt;
-        }
-        return null;
-    }
-
-    /**
-     * Bind to the ims service
-     * Returns true if bound sucessfully, false otherwise.
-     */
-    public boolean bindImsService() {
-        Intent intent = new Intent(IQtiImsExt.class.getName());
-        intent.setPackage(IMS_SERVICE_PKG_NAME);
-        mImsServiceBound = mContext.bindService(intent,
-                                   mConnection,
-                                   Context.BIND_AUTO_CREATE);
-        Log.d(this, "Getting IQtiImsExt : " + (mImsServiceBound?"yes":"failed"));
-        return mImsServiceBound;
-    }
-
-    /* Unbind the ims service if was already bound */
-    public void unbindImsService() {
-        if (mImsServiceBound) {
-            Log.d(this, "UnBinding IQtiImsExt");
-
-            mContext.unbindService(mConnection);
-            mImsServiceBound = false;
-        }
-    }
 
     /**
      * Is true when the activity has been previously started. Some code needs to know not just if
@@ -296,8 +239,6 @@ public class InCallPresenter implements CallList.Listener,
 
         // This only gets called by the service so this is okay.
         mServiceConnected = true;
-        // Bind to ImsService to get IQtiImsExt interface
-        bindImsService();
 
         // The final thing we do in this set up is add ourselves as a listener to CallList.  This
         // will kick off an update and the whole process can start.
@@ -328,8 +269,6 @@ public class InCallPresenter implements CallList.Listener,
     public void tearDown() {
         Log.d(this, "tearDown");
         mServiceConnected = false;
-
-        unbindImsService();
         attemptCleanup();
 
         VideoPauseController.getInstance().tearDown();
@@ -680,18 +619,6 @@ public class InCallPresenter implements CallList.Listener,
         if (isBound && mInCallState == InCallState.NO_CALLS) {
             mInCallState = InCallState.OUTGOING;
         }
-    }
-
-    public int getImsPhoneId() {
-        if (getQtiImsExtInterface() != null) {
-            try {
-                return mQtiImsExt.getImsPhoneId();
-            } catch (RemoteException e) {
-               Log.e(this, "remoteException when trying to get imsphoneId: " +e);
-            }
-        }
-        Log.w(this, "getImsPhoneId returning -1");
-        return -1;
     }
 
     @Override

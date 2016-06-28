@@ -39,7 +39,6 @@ import android.telecom.InCallService.VideoCall;
 import android.telecom.Connection;
 import android.telecom.Connection.VideoProvider;
 import android.telecom.VideoProfile;
-import android.telephony.SubscriptionManager;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -236,29 +235,6 @@ public class QtiCallUtils {
         InCallAudioManager.getInstance().onModifyCallClicked(call, videoProfile.getVideoState());
     }
 
-    public static boolean isConfigEnabled(Context context, int config) {
-        int phoneId = InCallPresenter.getInstance().getImsPhoneId();
-        int[] subId;
-
-        if (phoneId != -1) {
-            subId = SubscriptionManager.getSubId(phoneId);
-            return (context != null && subId != null && subId.length > 0 &&
-                    SubscriptionManager.getResourcesForSubId(context, subId[0]).getBoolean(config));
-        }
-        return false;
-    }
-
-   /**
-     * Checks the boolean flag in config file to figure out if custom video ui is required or
-     * not
-     */
-    public static boolean useCustomVideoUi(Context context) {
-        if (context == null) {
-            Log.w(context, "Context is null...");
-        }
-        return isConfigEnabled(context, R.bool.use_custom_video_ui);
-    }
-
     /**
      * Checks the boolean flag in config file to figure out if we are going to use Qti extension or
      * not
@@ -267,7 +243,7 @@ public class QtiCallUtils {
         if (context == null) {
             Log.w(context, "Context is null...");
         }
-        return isConfigEnabled(context, R.bool.video_call_use_ext);
+        return context != null && context.getResources().getBoolean(R.bool.video_call_use_ext);
     }
 
     /**
