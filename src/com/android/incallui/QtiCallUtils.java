@@ -43,7 +43,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import org.codeaurora.QtiVideoCallConstants;
+import org.codeaurora.ims.QtiCallConstants;
 
 /**
  * This class contains Qti specific utiltity functions.
@@ -280,16 +280,16 @@ public class QtiCallUtils {
     }
 
     /**
-     * This method converts the QtiVideoCallConstants' Orientation modes to the ActivityInfo
+     * This method converts the QtiCallConstants' Orientation modes to the ActivityInfo
      * screen orientation mode.
      */
     public static int toUiOrientationMode(int orientationMode) {
         switch(orientationMode) {
-            case QtiVideoCallConstants.ORIENTATION_MODE_LANDSCAPE:
+            case QtiCallConstants.ORIENTATION_MODE_LANDSCAPE:
                 return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-            case QtiVideoCallConstants.ORIENTATION_MODE_PORTRAIT:
+            case QtiCallConstants.ORIENTATION_MODE_PORTRAIT:
                 return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-            case QtiVideoCallConstants.ORIENTATION_MODE_DYNAMIC:
+            case QtiCallConstants.ORIENTATION_MODE_DYNAMIC:
                 return ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR;
             default:
                 return ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
@@ -303,8 +303,8 @@ public class QtiCallUtils {
 
     public static boolean hasVoiceCapabilities(Call call) {
         return call != null
-                && call.can(QtiVideoCallConstants.CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL)
-                && call.can(QtiVideoCallConstants.CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE);
+                && call.can(QtiCallConstants.CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_LOCAL)
+                && call.can(QtiCallConstants.CAPABILITY_SUPPORTS_DOWNGRADE_TO_VOICE_REMOTE);
     }
 
     public static boolean hasVideoCapabilities(Call call) {

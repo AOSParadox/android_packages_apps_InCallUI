@@ -35,7 +35,7 @@ import android.os.Bundle;
 import com.android.incallui.InCallPresenter.InCallDetailsListener;
 import com.android.incallui.InCallVideoCallCallbackNotifier.VideoEventListener;
 import com.android.incallui.InCallVideoCallCallbackNotifier.SessionModificationListener;
-import org.codeaurora.QtiVideoCallConstants;
+import org.codeaurora.ims.QtiCallConstants;
 
 /**
  * This class listens to incoming events for the listener classes it implements. It should
@@ -119,25 +119,25 @@ public class InCallMessageController implements InCallSubstateListener, VideoEve
         String callSubstateChangedText = "";
 
         if (QtiCallUtils.isEnabled(
-                QtiVideoCallConstants.CALL_SUBSTATE_AUDIO_CONNECTED_SUSPENDED, callSubstate)) {
+                QtiCallConstants.CALL_SUBSTATE_AUDIO_CONNECTED_SUSPENDED, callSubstate)) {
             callSubstateChangedText +=
                     mContext.getResources().getString(
                     R.string.call_substate_connected_suspended_audio);
         }
 
         if (QtiCallUtils.isEnabled(
-                QtiVideoCallConstants.CALL_SUBSTATE_VIDEO_CONNECTED_SUSPENDED, callSubstate)) {
+                QtiCallConstants.CALL_SUBSTATE_VIDEO_CONNECTED_SUSPENDED, callSubstate)) {
             callSubstateChangedText +=
                     mContext.getResources().getString(
                     R.string.call_substate_connected_suspended_video);
         }
 
-        if (QtiCallUtils.isEnabled(QtiVideoCallConstants.CALL_SUBSTATE_AVP_RETRY, callSubstate)) {
+        if (QtiCallUtils.isEnabled(QtiCallConstants.CALL_SUBSTATE_AVP_RETRY, callSubstate)) {
             callSubstateChangedText +=
                     mContext.getResources().getString(R.string.call_substate_avp_retry);
         }
 
-        if (QtiCallUtils.isNotEnabled(QtiVideoCallConstants.CALL_SUBSTATE_ALL, callSubstate)) {
+        if (QtiCallUtils.isNotEnabled(QtiCallConstants.CALL_SUBSTATE_ALL, callSubstate)) {
             callSubstateChangedText =
                     mContext.getResources().getString(R.string.call_substate_call_resumed);
         }
@@ -250,8 +250,8 @@ public class InCallMessageController implements InCallSubstateListener, VideoEve
             Log.w(this, "onDisconnect: null Extras");
             return;
         }
-        final int errorCode = extras.getInt(QtiVideoCallConstants.EXTRAS_KEY_CALL_FAIL_EXTRA_CODE,
-                QtiVideoCallConstants.DISCONNECT_CAUSE_UNSPECIFIED);
+        final int errorCode = extras.getInt(QtiCallConstants.EXTRAS_KEY_CALL_FAIL_EXTRA_CODE,
+                QtiCallConstants.DISCONNECT_CAUSE_UNSPECIFIED);
         Log.d(this, "onDisconnect: code = " + errorCode);
         showCallDisconnectInfo(errorCode);
     }
@@ -260,12 +260,12 @@ public class InCallMessageController implements InCallSubstateListener, VideoEve
      * This method displays specific disconnect information to user
      */
     private void showCallDisconnectInfo(int errorCode) {
-       if(errorCode == QtiVideoCallConstants.DISCONNECT_CAUSE_UNSPECIFIED) {
+       if(errorCode == QtiCallConstants.DISCONNECT_CAUSE_UNSPECIFIED) {
           return;
        }
 
        switch (errorCode) {
-         case QtiVideoCallConstants.CALL_FAIL_EXTRA_CODE_LTE_3G_HA_FAILED:
+         case QtiCallConstants.CALL_FAIL_EXTRA_CODE_LTE_3G_HA_FAILED:
              QtiCallUtils.displayToast(mContext, R.string.call_failed_ho_not_feasible);
              break;
          default:
@@ -296,7 +296,7 @@ public class InCallMessageController implements InCallSubstateListener, VideoEve
 
     private void showUpgradeFailInfo(int errorCode) {
         switch (errorCode) {
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_REQUEST_LOW_BATTERY:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_REQUEST_LOW_BATTERY:
                 QtiCallUtils.displayToast(mContext,
                         R.string.modify_call_failed_due_to_low_battery);
                 break;
@@ -332,29 +332,29 @@ public class InCallMessageController implements InCallSubstateListener, VideoEve
      */
     private static int getSessionModificationCauseResourceId(int cause) {
         switch(cause) {
-            case QtiVideoCallConstants.CAUSE_CODE_UNSPECIFIED:
+            case QtiCallConstants.CAUSE_CODE_UNSPECIFIED:
                 return R.string.session_modify_cause_unspecified;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_UPGRADE_LOCAL_REQ:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_UPGRADE_LOCAL_REQ:
                 return R.string.session_modify_cause_upgrade_local_request;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_UPGRADE_REMOTE_REQ:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_UPGRADE_REMOTE_REQ:
                 return R.string.session_modify_cause_upgrade_remote_request;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_LOCAL_REQ:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_LOCAL_REQ:
                 return R.string.session_modify_cause_downgrade_local_request;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_REMOTE_REQ:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_REMOTE_REQ:
                 return R.string.session_modify_cause_downgrade_remote_request;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_RTP_TIMEOUT:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_RTP_TIMEOUT:
                 return R.string.session_modify_cause_downgrade_rtp_timeout;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_QOS:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_QOS:
                 return R.string.session_modify_cause_downgrade_qos;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_PACKET_LOSS:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_PACKET_LOSS:
                 return R.string.session_modify_cause_downgrade_packet_loss;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_LOW_THRPUT:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_LOW_THRPUT:
                 return R.string.session_modify_cause_downgrade_low_thrput;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_THERM_MITIGATION:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_THERM_MITIGATION:
                 return R.string.session_modify_cause_downgrade_thermal_mitigation;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_LIPSYNC:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_LIPSYNC:
                 return R.string.session_modify_cause_downgrade_lipsync;
-            case QtiVideoCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_GENERIC_ERROR:
+            case QtiCallConstants.CAUSE_CODE_SESSION_MODIFY_DOWNGRADE_GENERIC_ERROR:
             default:
                 return R.string.session_modify_cause_downgrade_generic_error;
         }

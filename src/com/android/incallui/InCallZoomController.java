@@ -35,7 +35,7 @@ import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Window;
 import android.view.WindowManager;
-import org.codeaurora.QtiVideoCallConstants;
+import org.codeaurora.ims.QtiCallConstants;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraAccessException;
@@ -185,7 +185,7 @@ public class InCallZoomController implements InCallPresenter.IncomingCallListene
     }
 
     private static void initZoomControl(ZoomControlBar zoomControl, int zoomIndex) {
-        zoomControl.setZoomMax(QtiVideoCallConstants.CAMERA_MAX_ZOOM);
+        zoomControl.setZoomMax(QtiCallConstants.CAMERA_MAX_ZOOM);
         zoomControl.setZoomIndex(zoomIndex);
         zoomControl.setEnabled(true);
     }

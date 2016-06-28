@@ -31,7 +31,7 @@ package com.android.incallui;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import com.android.incallui.InCallPresenter.InCallDetailsListener;
-import org.codeaurora.QtiVideoCallConstants;
+import org.codeaurora.ims.QtiCallConstants;
 
 /**
  * This class listens to incoming events from the {@class InCallDetailsListener}.
@@ -46,7 +46,7 @@ public class OrientationModeHandler implements InCallDetailsListener {
 
     private PrimaryCallTracker mPrimaryCallTracker;
 
-    private int mOrientationMode = QtiVideoCallConstants.ORIENTATION_MODE_UNSPECIFIED;
+    private int mOrientationMode = QtiCallConstants.ORIENTATION_MODE_UNSPECIFIED;
 
     /**
      * Returns a singleton instance of {@class OrientationModeHandler}
@@ -95,12 +95,12 @@ public class OrientationModeHandler implements InCallDetailsListener {
         Log.d(this, "onDetailsChanged: - call: " + call + "details: " + details);
         final Bundle extras =  (call != null && details != null) ? details.getExtras() : null;
         final int orientationMode = (extras != null) ? extras.getInt(
-                QtiVideoCallConstants.ORIENTATION_MODE_EXTRA_KEY,
-                QtiVideoCallConstants.ORIENTATION_MODE_UNSPECIFIED) :
-                QtiVideoCallConstants.ORIENTATION_MODE_UNSPECIFIED;
+                QtiCallConstants.ORIENTATION_MODE_EXTRA_KEY,
+                QtiCallConstants.ORIENTATION_MODE_UNSPECIFIED) :
+                QtiCallConstants.ORIENTATION_MODE_UNSPECIFIED;
 
         if (orientationMode != mOrientationMode && orientationMode !=
-                QtiVideoCallConstants.ORIENTATION_MODE_UNSPECIFIED) {
+                QtiCallConstants.ORIENTATION_MODE_UNSPECIFIED) {
             mOrientationMode = orientationMode;
             onOrientationModeChanged(call, mOrientationMode);
         }
@@ -137,7 +137,7 @@ public class OrientationModeHandler implements InCallDetailsListener {
      */
     public int getOrientation(Call call) {
         if (CallUtils.isVideoCall(call)) {
-            return (mOrientationMode == QtiVideoCallConstants.ORIENTATION_MODE_UNSPECIFIED) ?
+            return (mOrientationMode == QtiCallConstants.ORIENTATION_MODE_UNSPECIFIED) ?
                     ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR :
                     QtiCallUtils.toUiOrientationMode(mOrientationMode);
         } else {

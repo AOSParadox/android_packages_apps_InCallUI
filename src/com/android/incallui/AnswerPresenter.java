@@ -32,11 +32,11 @@ import android.telecom.VideoProfile;
 
 import java.util.List;
 
-import org.codeaurora.ims.qtiims.IQtiImsInterface;
-import org.codeaurora.ims.qtiims.IQtiImsInterfaceListener;
-import org.codeaurora.ims.qtiims.QtiImsInterfaceListenerBaseImpl;
-import org.codeaurora.ims.qtiims.QtiImsInterfaceUtils;
-import org.codeaurora.QtiVideoCallConstants;
+import org.codeaurora.ims.internal.IQtiImsExt;
+import org.codeaurora.ims.internal.IQtiImsExtListener;
+import org.codeaurora.ims.QtiImsExtListenerBaseImpl;
+import org.codeaurora.ims.utils.QtiImsExtUtils;
+import org.codeaurora.ims.QtiCallConstants;
 
 /**
  * Presenter for the Incoming call widget. The {@link AnswerPresenter} handles the logic during
@@ -63,7 +63,7 @@ public class AnswerPresenter extends Presenter<AnswerPresenter.AnswerUi>
      * Details required to support call deflection feature.
      */
     private static final String IMS_SERVICE_PKG_NAME = "org.codeaurora.ims";
-    private IQtiImsInterface mQtiImsInterface = null;
+    private IQtiImsExt mQtiImsExt = null;
     private boolean mImsServiceBound = false;
 
     /* Variables to cache the request details during asynchronous bind request */
@@ -71,19 +71,19 @@ public class AnswerPresenter extends Presenter<AnswerPresenter.AnswerUi>
     private String mDeflectToNumber = null;
     private int mDeflectPhoneId = 0;
 
-    /* Service connection bound to IQtiImsInterface */
+    /* Service connection bound to IQtiImsExt */
     private ServiceConnection mConnection = new ServiceConnection() {
 
         /* Below API gets invoked when connection to ImsService is established */
         public void onServiceConnected(ComponentName className, IBinder service) {
-            /* Retrieve the IQtiImsInterface */
-            mQtiImsInterface = IQtiImsInterface.Stub.asInterface(service);
+            /* Retrieve the IQtiImsExt */
+            mQtiImsExt = IQtiImsExt.Stub.asInterface(service);
 
             /**
              * If interface is available and deflect request is pending,
              * then, process the deflect request.
              */
-            if (mQtiImsInterface != null && mPendingDeflectRequest) {
+            if (mQtiImsExt != null && mPendingDeflectRequest) {
                 sendCallDeflectRequest(mDeflectPhoneId, mDeflectToNumber);
             } else {
                 /* Request or interface is unavailable, unbind the service */
@@ -96,9 +96,9 @@ public class AnswerPresenter extends Presenter<AnswerPresenter.AnswerUi>
         }
     };
 
-    /* QtiImsInterfaceListenerBaseImpl instance to handle call deflection response */
-    private QtiImsInterfaceListenerBaseImpl imsInterfaceListener =
-            new QtiImsInterfaceListenerBaseImpl() {
+    /* QtiImsExtListenerBaseImpl instance to handle call deflection response */
+    private QtiImsExtListenerBaseImpl imsInterfaceListener =
+            new QtiImsExtListenerBaseImpl() {
 
         /* Handles call deflect response */
         @Override
@@ -111,8 +111,8 @@ public class AnswerPresenter extends Presenter<AnswerPresenter.AnswerUi>
      * Informs if call deflection interafce is available or not.
      * Returns true if allowed, false otherwise.
      */
-    public boolean isQtiImsInterfaceAvailable() {
-        return (mImsServiceBound && (mQtiImsInterface != null));
+    public boolean isQtiImsExtAvailable() {
+        return (mImsServiceBound && (mQtiImsExt != null));
     }
 
     /**
@@ -128,19 +128,19 @@ public class AnswerPresenter extends Presenter<AnswerPresenter.AnswerUi>
      * Returns true if bound sucessfully, false otherwise.
      */
     public boolean bindImsService() {
-        Intent intent = new Intent(IQtiImsInterface.class.getName());
+        Intent intent = new Intent(IQtiImsExt.class.getName());
         intent.setPackage(IMS_SERVICE_PKG_NAME);
         mImsServiceBound = getUi().getContext().bindService(intent,
                                    mConnection,
                                    Context.BIND_AUTO_CREATE);
-        Log.d(this, "Getting IQtiImsInterface : " + (mImsServiceBound?"yes":"failed"));
+        Log.d(this, "Getting IQtiImsExt : " + (mImsServiceBound?"yes":"failed"));
         return mImsServiceBound;
     }
 
     /* Unbind the ims service if was already bound */
     public void unbindImsService() {
         if (mImsServiceBound) {
-            Log.d(this, "UnBinding IQtiImsInterface: callId " + mCallId);
+            Log.d(this, "UnBinding IQtiImsExt: callId " + mCallId);
 
             /* When disconnecting, reset the globals variables */
             mImsServiceBound = false;
@@ -155,7 +155,7 @@ public class AnswerPresenter extends Presenter<AnswerPresenter.AnswerUi>
         try {
             Log.d(this, "Sending deflect request with Phone id " + phoneId +
                     " to " + deflectNumber);
-            mQtiImsInterface.sendCallDeflectRequest(phoneId, deflectNumber,
+            mQtiImsExt.sendCallDeflectRequest(phoneId, deflectNumber,
                     imsInterfaceListener);
         } catch (RemoteException e) {
             Log.e(this, "sendCallDeflectRequest exception " + e);
@@ -459,7 +459,7 @@ public class AnswerPresenter extends Presenter<AnswerPresenter.AnswerUi>
      * Deflect the incoming call.
      */
     public void onDeflect(Context context) {
-        String deflectCallNumber = QtiImsInterfaceUtils.getCallDeflectNumber(
+        String deflectCallNumber = QtiImsExtUtils.getCallDeflectNumber(
                                            context.getContentResolver());
         /* If not set properly, inform user via toast */
         if (deflectCallNumber == null) {
@@ -474,7 +474,7 @@ public class AnswerPresenter extends Presenter<AnswerPresenter.AnswerUi>
             if (bindImsService()) {
                 /* wait for the service connection callback */
             } else {
-                /* Ims service is available, but no QtiImsInterface available */
+                /* Ims service is available, but no QtiImsExt available */
                 Log.d(this, "Ims Service is not available for call deflection interface");
                 mPendingDeflectRequest = false;
                 QtiCallUtils.displayToast(context,
@@ -545,7 +545,7 @@ public class AnswerPresenter extends Presenter<AnswerPresenter.AnswerUi>
         try{
             value = android.provider.Settings.Global.getInt(
                               getUi().getContext().getContentResolver(),
-                              QtiImsInterfaceUtils.QTI_IMS_DEFLECT_ENABLED);
+                              QtiImsExtUtils.QTI_IMS_DEFLECT_ENABLED);
         } catch(Settings.SettingNotFoundException e) {
             //do Nothing
         }

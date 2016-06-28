@@ -39,8 +39,8 @@ import android.net.Uri;
 import android.view.WindowManager;
 import android.os.Bundle;
 
-import org.codeaurora.QtiCallUtils;
-import org.codeaurora.QtiVideoCallConstants;
+import org.codeaurora.ims.utils.QtiCallUtils;
+import org.codeaurora.ims.QtiCallConstants;
 
 /*
  * This class handles redialing a call on CS domain when current call ends with reason
@@ -131,10 +131,10 @@ public class InCallCsRedialHandler implements CallList.Listener {
      * This method gets fail cause value corresponding to EXTRAS_KEY_CALL_FAIL_EXTRA_CODE key
      */
     private int getFailCauseFromExtras(Bundle extras) {
-        int failCause = QtiVideoCallConstants.DISCONNECT_CAUSE_UNSPECIFIED;
+        int failCause = QtiCallConstants.DISCONNECT_CAUSE_UNSPECIFIED;
         if (extras != null) {
-            failCause = extras.getInt(QtiVideoCallConstants.EXTRAS_KEY_CALL_FAIL_EXTRA_CODE,
-                    QtiVideoCallConstants.DISCONNECT_CAUSE_UNSPECIFIED);
+            failCause = extras.getInt(QtiCallConstants.EXTRAS_KEY_CALL_FAIL_EXTRA_CODE,
+                    QtiCallConstants.DISCONNECT_CAUSE_UNSPECIFIED);
         }
         return failCause;
     }
@@ -147,7 +147,7 @@ public class InCallCsRedialHandler implements CallList.Listener {
     private void checkForCsRetry(final Call call) {
         final int failCause = getFailCauseFromExtras(call.getExtras());
         Log.i(this, "checkForCsRetry failCause: " + failCause);
-        if (failCause != QtiVideoCallConstants.CALL_FAIL_EXTRA_CODE_CALL_CS_RETRY_REQUIRED) {
+        if (failCause != QtiCallConstants.CALL_FAIL_EXTRA_CODE_CALL_CS_RETRY_REQUIRED) {
             return;
         }
 
@@ -166,7 +166,7 @@ public class InCallCsRedialHandler implements CallList.Listener {
 
         final Uri uri = Uri.fromParts("tel", number, null);
         final Intent intent = new Intent(Intent.ACTION_CALL, uri);
-        intent.putExtra(QtiVideoCallConstants.EXTRA_CALL_DOMAIN, QtiVideoCallConstants.DOMAIN_CS);
+        intent.putExtra(QtiCallConstants.EXTRA_CALL_DOMAIN, QtiCallConstants.DOMAIN_CS);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         try {

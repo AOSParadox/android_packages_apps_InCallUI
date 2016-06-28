@@ -34,7 +34,7 @@ import com.google.common.base.Preconditions;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
-import org.codeaurora.QtiVideoCallConstants;
+import org.codeaurora.ims.QtiCallConstants;
 
 /**
  * This class listens to incoming events from the {@class InCallDetailsListener}.
@@ -97,11 +97,11 @@ public class SessionModificationCauseNotifier implements InCallDetailsListener{
         Log.d(this, "onDetailsChanged: - call: " + call + "details: " + details);
         final Bundle extras =  (call != null && details != null) ? details.getExtras() : null;
         final int sessionModificationCause = (extras != null) ? extras.getInt(
-                QtiVideoCallConstants.SESSION_MODIFICATION_CAUSE_EXTRA_KEY,
-                QtiVideoCallConstants.CAUSE_CODE_UNSPECIFIED) :
-                QtiVideoCallConstants.CAUSE_CODE_UNSPECIFIED;
+                QtiCallConstants.SESSION_MODIFICATION_CAUSE_EXTRA_KEY,
+                QtiCallConstants.CAUSE_CODE_UNSPECIFIED) :
+                QtiCallConstants.CAUSE_CODE_UNSPECIFIED;
 
-        if (sessionModificationCause != QtiVideoCallConstants.CAUSE_CODE_UNSPECIFIED) {
+        if (sessionModificationCause != QtiCallConstants.CAUSE_CODE_UNSPECIFIED) {
             Preconditions.checkNotNull(mSessionModificationCauseListeners);
             for (InCallSessionModificationCauseListener listener :
                     mSessionModificationCauseListeners) {

@@ -28,7 +28,7 @@
 
 package com.android.incallui;
 
-import org.codeaurora.QtiVideoCallConstants;
+import org.codeaurora.ims.QtiCallConstants;
 import android.os.Bundle;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class CallSubstateNotifier implements InCallDetailsListener {
             new CopyOnWriteArrayList<>();
 
     private static CallSubstateNotifier sCallSubstateNotifier;
-    private int mCallSubstate = QtiVideoCallConstants.CALL_SUBSTATE_NONE;
+    private int mCallSubstate = QtiCallConstants.CALL_SUBSTATE_NONE;
 
     /**
      * This method returns a singleton instance of {@class CallSubstateNotifier}
@@ -99,9 +99,9 @@ public class CallSubstateNotifier implements InCallDetailsListener {
         Log.d(this, "onDetailsChanged - call: " + call + "details: " + details);
         final Bundle extras =  (call != null && details != null) ? details.getExtras() : null;
         final int callSubstate = (extras != null) ? extras.getInt(
-                QtiVideoCallConstants.CALL_SUBSTATE_EXTRA_KEY,
-                QtiVideoCallConstants.CALL_SUBSTATE_NONE) :
-                QtiVideoCallConstants.CALL_SUBSTATE_NONE;
+                QtiCallConstants.CALL_SUBSTATE_EXTRA_KEY,
+                QtiCallConstants.CALL_SUBSTATE_NONE) :
+                QtiCallConstants.CALL_SUBSTATE_NONE;
 
         if (callSubstate != mCallSubstate) {
             mCallSubstate = callSubstate;
